@@ -18,14 +18,14 @@ fn main() {
 fn part_one_solution(input_data: &Vec<i32>) -> i32 {
     return input_data
         .into_iter()
-        .map(|module_mass| fuel_for_mass(*module_mass))
+        .map(|module_mass| fuel_required_for_mass(*module_mass))
         .fold(0, |acc, x| acc + x);
 }
 
 fn part_two_solution(input_data: &Vec<i32>) -> i32 {
     return input_data
         .into_iter()
-        .map(|module_mass| recursive_fuel_for_mass(*module_mass))
+        .map(|module_mass| fuel_required_for_mass_and_fuel(*module_mass))
         .fold(0, |acc, x| acc + x);
 }
 
@@ -42,22 +42,24 @@ fn read_input_data_from_file(filepath: &str) -> Result<Vec<i32>, std::io::Error>
     Ok(split_by_line)
 }
 
-fn fuel_for_mass(module: i32) -> i32 {
-    return module / 3 - 2;
+fn fuel_required_for_mass(mass: i32) -> i32 {
+    return mass / 3 - 2;
 }
 
-fn recursive_fuel_for_mass(module: i32) -> i32 {
-    let mut fuels: Vec<i32> = vec![];
+// TODO see if I can do this recursively
+fn fuel_required_for_mass_and_fuel(module: i32) -> i32 {
+    let mut fuel_requirements: Vec<i32> = vec![];
     let mut fuel_remaining = module;
 
     while fuel_remaining > 0 {
-        fuel_remaining = fuel_for_mass(fuel_remaining);
-        if fuel_remaining > 0 {
-            fuels.push(fuel_remaining);
-        }
+        fuel_remaining = fuel_required_for_mass(fuel_remaining).max(0);
+
+        fuel_requirements.push(fuel_remaining);
     }
 
-    return fuels.into_iter().fold(0, |acc, fuel| acc + fuel);
+    return fuel_requirements
+        .into_iter()
+        .fold(0, |acc, fuel| acc + fuel);
 }
 
 #[cfg(test)]
@@ -65,17 +67,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_fuel_for_mass() {
-        assert_eq!(fuel_for_mass(12), 2);
-        assert_eq!(fuel_for_mass(14), 2);
-        assert_eq!(fuel_for_mass(1969), 654);
-        assert_eq!(fuel_for_mass(100756), 33583);
+    fn test_fuel_required_for_mass() {
+        assert_eq!(fuel_required_for_mass(12), 2);
+        assert_eq!(fuel_required_for_mass(14), 2);
+        assert_eq!(fuel_required_for_mass(1969), 654);
+        assert_eq!(fuel_required_for_mass(100756), 33583);
     }
 
     #[test]
-    fn test_recursive_fuel_for_mass() {
-        assert_eq!(recursive_fuel_for_mass(14), 2);
-        assert_eq!(recursive_fuel_for_mass(1969), 966);
-        assert_eq!(recursive_fuel_for_mass(100756), 50346);
+    fn test_fuel_required_for_mass_and_fuel() {
+        assert_eq!(fuel_required_for_mass_and_fuel(14), 2);
+        assert_eq!(fuel_required_for_mass_and_fuel(1969), 966);
+        assert_eq!(fuel_required_for_mass_and_fuel(100756), 50346);
     }
 }
