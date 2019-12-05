@@ -1,11 +1,10 @@
 fn main() {
-    let fuel_per_modules: Vec<i32> = example_data()
+    let total_fuel_needed: i32 = example_data()
         .into_iter()
         .map(|module_mass| fuel_for_mass(module_mass))
-        .collect();
+        .fold(0, |acc, x| acc + x);
 
-    let summed_fuel_per_modules = fuel_per_modules.iter().fold(0, |acc, x| acc + x);
-    println!("{:?}", summed_fuel_per_modules);
+    println!("{:?}", total_fuel_needed);
 }
 
 fn example_data() -> Vec<i32> {
