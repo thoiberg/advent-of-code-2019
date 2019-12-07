@@ -23,18 +23,20 @@ fn process_intcodes(mut intcodes: Vec<i32>) -> Vec<i32> {
 
         match opcode {
             1 => {
-                let first_value_index = intcodes[opcode_position + 1] as usize;
-                let second_value_index = intcodes[opcode_position + 2] as usize;
-                let new_value = intcodes[first_value_index] + intcodes[second_value_index];
-                let position_to_insert_new_value = intcodes[opcode_position + 3] as usize;
-                intcodes[position_to_insert_new_value] = new_value;
+                let (position_to_insert, new_value) = new_value_and_position_to_insert(
+                    opcode_position,
+                    &intcodes,
+                    OpcodeActions::Add,
+                );
+                intcodes[position_to_insert] = new_value;
             }
             2 => {
-                let first_value_index = intcodes[opcode_position + 1] as usize;
-                let second_value_index = intcodes[opcode_position + 2] as usize;
-                let new_value = intcodes[first_value_index] * intcodes[second_value_index];
-                let position_to_insert_new_value = intcodes[opcode_position + 3] as usize;
-                intcodes[position_to_insert_new_value] = new_value;
+                let (position_to_insert, new_value) = new_value_and_position_to_insert(
+                    opcode_position,
+                    &intcodes,
+                    OpcodeActions::Multiply,
+                );
+                intcodes[position_to_insert] = new_value;
             }
             99 => break,
             _ => panic!("Unexpected Opcode exiting"),
@@ -42,6 +44,28 @@ fn process_intcodes(mut intcodes: Vec<i32>) -> Vec<i32> {
     }
 
     intcodes
+}
+
+enum OpcodeActions {
+    Add,
+    Multiply,
+}
+
+fn new_value_and_position_to_insert(
+    opcode_position: usize,
+    intcodes: &Vec<i32>,
+    action: OpcodeActions,
+) -> (usize, i32) {
+    let first_value_index = intcodes[opcode_position + 1] as usize;
+    let second_value_index = intcodes[opcode_position + 2] as usize;
+    let position_to_insert_new_value = intcodes[opcode_position + 3] as usize;
+
+    let new_value = match action {
+        OpcodeActions::Add => intcodes[first_value_index] + intcodes[second_value_index],
+        OpcodeActions::Multiply => intcodes[first_value_index] * intcodes[second_value_index],
+    };
+
+    return (position_to_insert_new_value, new_value);
 }
 
 fn read_input_data_from_file(filepath: String) -> Result<Vec<i32>, io::Error> {
