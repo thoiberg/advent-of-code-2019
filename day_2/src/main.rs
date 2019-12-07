@@ -4,6 +4,8 @@ use std::io::Read;
 
 fn main() {
     println!("Part one: {:?}", solve_part_one());
+
+    solve_part_two();
 }
 
 fn solve_part_one() -> i32 {
@@ -15,6 +17,24 @@ fn solve_part_one() -> i32 {
     let processed_int_codes = process_intcodes(input_data);
 
     return processed_int_codes[0];
+}
+
+fn solve_part_two() -> () {
+    let input_data = read_input_data_from_file(String::from("src/input_data")).unwrap();
+
+    for noun in 0..100 {
+        for verb in 0..100 {
+            let mut clean_input_data = input_data.clone();
+            clean_input_data[1] = noun;
+            clean_input_data[2] = verb;
+
+            let instruction_pointer = process_intcodes(clean_input_data)[0];
+            if instruction_pointer == 19690720 {
+                println!("Part Two: {}", 100 * noun + verb);
+                break;
+            }
+        }
+    }
 }
 
 fn process_intcodes(mut intcodes: Vec<i32>) -> Vec<i32> {
