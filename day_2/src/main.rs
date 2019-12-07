@@ -85,4 +85,9 @@ mod tests {
             vec![30, 1, 1, 4, 2, 5, 6, 0, 99]
         );
     }
+
+    #[test]
+    fn test_part_one_solution_is_correct() {
+        assert_eq!(solve_part_one(), 4945026);
+    }
 }
