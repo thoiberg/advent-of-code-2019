@@ -17,32 +17,31 @@ fn solve_part_one() -> i32 {
     return processed_int_codes[0];
 }
 
-fn process_intcodes(intcodes: Vec<i32>) -> Vec<i32> {
-    let mut new_intcodes = intcodes.clone();
-    for opcode_position in (0..new_intcodes.len()).step_by(4) {
-        let opcode = new_intcodes[opcode_position];
+fn process_intcodes(mut intcodes: Vec<i32>) -> Vec<i32> {
+    for opcode_position in (0..intcodes.len()).step_by(4) {
+        let opcode = intcodes[opcode_position];
 
         match opcode {
             1 => {
-                let first_value_index = new_intcodes[opcode_position + 1] as usize;
-                let second_value_index = new_intcodes[opcode_position + 2] as usize;
-                let new_value = new_intcodes[first_value_index] + new_intcodes[second_value_index];
-                let position_to_insert_new_value = new_intcodes[opcode_position + 3] as usize;
-                new_intcodes[position_to_insert_new_value] = new_value;
+                let first_value_index = intcodes[opcode_position + 1] as usize;
+                let second_value_index = intcodes[opcode_position + 2] as usize;
+                let new_value = intcodes[first_value_index] + intcodes[second_value_index];
+                let position_to_insert_new_value = intcodes[opcode_position + 3] as usize;
+                intcodes[position_to_insert_new_value] = new_value;
             }
             2 => {
-                let first_value_index = new_intcodes[opcode_position + 1] as usize;
-                let second_value_index = new_intcodes[opcode_position + 2] as usize;
-                let new_value = new_intcodes[first_value_index] * new_intcodes[second_value_index];
-                let position_to_insert_new_value = new_intcodes[opcode_position + 3] as usize;
-                new_intcodes[position_to_insert_new_value] = new_value;
+                let first_value_index = intcodes[opcode_position + 1] as usize;
+                let second_value_index = intcodes[opcode_position + 2] as usize;
+                let new_value = intcodes[first_value_index] * intcodes[second_value_index];
+                let position_to_insert_new_value = intcodes[opcode_position + 3] as usize;
+                intcodes[position_to_insert_new_value] = new_value;
             }
             99 => break,
             _ => panic!("Unexpected Opcode exiting"),
         }
     }
 
-    new_intcodes
+    intcodes
 }
 
 fn read_input_data_from_file(filepath: String) -> Result<Vec<i32>, io::Error> {
