@@ -3,13 +3,18 @@ use std::io;
 use std::io::Read;
 
 fn main() {
+    println!("Part one: {:?}", solve_part_one());
+}
+
+fn solve_part_one() -> i32 {
     let mut input_data = read_input_data_from_file(String::from("src/input_data")).unwrap();
 
     input_data[1] = 12;
     input_data[2] = 2;
 
     let processed_int_codes = process_intcodes(input_data);
-    println!("output data: {:?}", processed_int_codes);
+
+    return processed_int_codes[0];
 }
 
 fn process_intcodes(intcodes: Vec<i32>) -> Vec<i32> {
