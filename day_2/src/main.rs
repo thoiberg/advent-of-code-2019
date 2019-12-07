@@ -25,25 +25,23 @@ fn solve_part_one() -> i32 {
 fn solve_part_two() -> Option<i32> {
     let input_data = read_input_data_from_file(String::from("src/input_data")).unwrap();
 
-    let (noun, verb) = find_noun_and_verb_that_match_output(input_data, 0..100, 0..100, 19690720)?;
+    let (noun, verb) = find_noun_and_verb_that_match_output(input_data, 19690720)?;
 
     return Some(noun * 100 + verb);
 }
 
 fn find_noun_and_verb_that_match_output(
     intcodes: Vec<i32>,
-    noun_range: std::ops::Range<i32>,
-    verb_range: std::ops::Range<i32>,
     expected_output: i32,
 ) -> Option<(i32, i32)> {
-    for noun in noun_range {
-        for verb in (0..100) {
+    for noun in 0..100 {
+        for verb in 0..100 {
             let mut clean_intcodes = intcodes.clone();
             clean_intcodes[1] = noun;
             clean_intcodes[2] = verb;
 
             let instruction_pointer = process_intcodes(clean_intcodes)[0];
-            if instruction_pointer == 19690720 {
+            if instruction_pointer == expected_output {
                 return Some((noun, verb));
             }
         }
