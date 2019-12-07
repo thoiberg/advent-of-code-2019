@@ -5,7 +5,10 @@ use std::io::Read;
 fn main() {
     println!("Part one: {:?}", solve_part_one());
 
-    solve_part_two();
+    match solve_part_two() {
+        Some(part_two_solution) => println!("Part Two: {}", part_two_solution),
+        None => println!("Unable to find a matching noun and verb for Part Two"),
+    };
 }
 
 fn solve_part_one() -> i32 {
@@ -19,22 +22,34 @@ fn solve_part_one() -> i32 {
     return processed_int_codes[0];
 }
 
-fn solve_part_two() -> () {
+fn solve_part_two() -> Option<i32> {
     let input_data = read_input_data_from_file(String::from("src/input_data")).unwrap();
 
-    for noun in 0..100 {
-        for verb in 0..100 {
-            let mut clean_input_data = input_data.clone();
-            clean_input_data[1] = noun;
-            clean_input_data[2] = verb;
+    let (noun, verb) = find_noun_and_verb_that_match_output(input_data, 0..100, 0..100, 19690720)?;
 
-            let instruction_pointer = process_intcodes(clean_input_data)[0];
+    return Some(noun * 100 + verb);
+}
+
+fn find_noun_and_verb_that_match_output(
+    intcodes: Vec<i32>,
+    noun_range: std::ops::Range<i32>,
+    verb_range: std::ops::Range<i32>,
+    expected_output: i32,
+) -> Option<(i32, i32)> {
+    for noun in noun_range {
+        for verb in (0..100) {
+            let mut clean_intcodes = intcodes.clone();
+            clean_intcodes[1] = noun;
+            clean_intcodes[2] = verb;
+
+            let instruction_pointer = process_intcodes(clean_intcodes)[0];
             if instruction_pointer == 19690720 {
-                println!("Part Two: {}", 100 * noun + verb);
-                break;
+                return Some((noun, verb));
             }
         }
     }
+
+    return None;
 }
 
 fn process_intcodes(mut intcodes: Vec<i32>) -> Vec<i32> {
@@ -59,7 +74,7 @@ fn process_intcodes(mut intcodes: Vec<i32>) -> Vec<i32> {
                 intcodes[position_to_insert] = new_value;
             }
             99 => break,
-            _ => panic!("Unexpected Opcode exiting"),
+            _ => panic!("Unexpected Opcode, exiting"),
         }
     }
 
@@ -132,5 +147,10 @@ mod tests {
     #[test]
     fn test_part_one_solution_is_correct() {
         assert_eq!(solve_part_one(), 4945026);
+    }
+
+    #[test]
+    fn test_part_two_solution_is_correct() {
+        assert_eq!(solve_part_two().unwrap(), 5296)
     }
 }
