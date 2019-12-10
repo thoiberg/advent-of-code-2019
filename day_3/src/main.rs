@@ -5,7 +5,6 @@ use std::io::Read;
 use std::iter::FromIterator;
 
 fn main() {
-    // println!("input data: {:?}", read_and_process_input().unwrap()[0]);
     let moves = read_and_process_input().unwrap();
     let first_move_list = create_list_of_points(moves[0].clone());
     let second_move_list = create_list_of_points(moves[1].clone());
@@ -107,7 +106,7 @@ mod tests {
     fn test_create_list_of_points_process_up() {
         assert_eq!(
             create_list_of_points(String::from("U4")),
-            vec![(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)]
+            HashSet::from_iter(vec![(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)])
         );
     }
 
@@ -115,7 +114,7 @@ mod tests {
     fn test_create_list_of_points_process_right() {
         assert_eq!(
             create_list_of_points(String::from("R4")),
-            vec![(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)]
+            HashSet::from_iter(vec![(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)])
         );
     }
 
@@ -123,7 +122,7 @@ mod tests {
     fn test_create_list_of_points_process_left() {
         assert_eq!(
             create_list_of_points(String::from("L4")),
-            vec![(0, 0), (-1, 0), (-2, 0), (-3, 0), (-4, 0)]
+            HashSet::from_iter(vec![(0, 0), (-1, 0), (-2, 0), (-3, 0), (-4, 0)])
         )
     }
 
@@ -131,7 +130,7 @@ mod tests {
     fn test_create_list_of_points_process_down() {
         assert_eq!(
             create_list_of_points(String::from("D4")),
-            vec![(0, 0), (0, -1), (0, -2), (0, -3), (0, -4)]
+            HashSet::from_iter(vec![(0, 0), (0, -1), (0, -2), (0, -3), (0, -4)])
         )
     }
 
@@ -139,7 +138,7 @@ mod tests {
     fn test_create_list_of_points_handle_multiple_movements() {
         assert_eq!(
             create_list_of_points(String::from("U1,L3,R7,D2")),
-            vec![
+            HashSet::from_iter(vec![
                 (0, 0),
                 (0, 1),
                 (-1, 1),
@@ -154,7 +153,7 @@ mod tests {
                 (4, 1),
                 (4, 0),
                 (4, -1),
-            ]
+            ])
         );
     }
 }
