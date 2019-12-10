@@ -39,18 +39,19 @@ fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
         let distance_to_move = &movement[1..].parse::<i32>().unwrap();
         match direction {
             'R' => {
-                let mut step = coordinates.last().unwrap().0;
-                for coordinate in (step + 1..step + distance_to_move + 1) {
+                let step = coordinates.last().unwrap().0;
+                for coordinate in step + 1..step + distance_to_move + 1 {
                     coordinates.push((coordinate, coordinates.last().unwrap().1));
                 }
             }
             'U' => {
-                let mut step = coordinates.last().unwrap().1;
-                for coordinate in (step + 1..step + distance_to_move + 1) {
+                let step = coordinates.last().unwrap().1;
+                for coordinate in step + 1..step + distance_to_move + 1 {
                     coordinates.push((coordinates.last().unwrap().0, coordinate));
                 }
             }
             'L' => {
+                // TODO: the difference between to_owned and clone
                 let mut counter = distance_to_move.to_owned();
 
                 while counter > 0 {
