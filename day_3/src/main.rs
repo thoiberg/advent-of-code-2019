@@ -44,13 +44,13 @@ fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
         match direction {
             'R' => {
                 let step = coordinates.last().unwrap().0;
-                for coordinate in step + 1..step + distance_to_move + 1 {
+                for coordinate in step + 1..=step + distance_to_move {
                     coordinates.push((coordinate, coordinates.last().unwrap().1));
                 }
             }
             'U' => {
                 let step = coordinates.last().unwrap().1;
-                for coordinate in step + 1..step + distance_to_move + 1 {
+                for coordinate in step + 1..=step + distance_to_move {
                     coordinates.push((coordinates.last().unwrap().0, coordinate));
                 }
             }
