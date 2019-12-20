@@ -104,14 +104,6 @@ mod tests {
         assert_eq!(part_one_solution(), 870);
     }
 
-    // #[test]
-    // fn test_can_find_the_manhattan_distance_for_closest_intersection() {
-    //     let test_data = vec![
-    //         String::from("R75,D30,R83,U83,L12,D49,R71,U7,L72"),
-    //         String::from("U62,R66,U55,R34,D71,R55,D58,R83"),
-    //     ];
-    //     assert_eq!(find_manhattan_distance(test_data), 159);
-    // }
     #[test]
     fn test_create_list_of_points_process_up() {
         assert_eq!(
@@ -165,5 +157,15 @@ mod tests {
                 (4, -1),
             ])
         );
+    }
+
+    #[test]
+    fn test_find_manhattan_distance() {
+        assert_eq!(find_manhattan_distance((10, 10)), 20);
+    }
+
+    #[test]
+    fn test_find_manhattan_distance_with_negative_coordinates() {
+        assert_eq!(find_manhattan_distance((-10, -10)), 20);
     }
 }
