@@ -5,6 +5,10 @@ use std::io::Read;
 use std::iter::FromIterator;
 
 fn main() {
+    println!("{}", part_one_solution());
+}
+
+fn part_one_solution() -> i32 {
     let moves = read_and_process_input().unwrap();
     let first_move_list = create_list_of_points(moves[0].clone());
     let second_move_list = create_list_of_points(moves[1].clone());
@@ -21,7 +25,7 @@ fn main() {
 
     distances.sort();
 
-    println!("{}", distances[0]);
+    distances[0]
 }
 
 fn find_manhattan_distance(coordinate: (i32, i32)) -> i32 {
@@ -94,6 +98,11 @@ fn read_and_process_input() -> Result<Vec<String>, ioError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_part_one_solution() {
+        assert_eq!(part_one_solution(), 870);
+    }
 
     // #[test]
     // fn test_can_find_the_manhattan_distance_for_closest_intersection() {
