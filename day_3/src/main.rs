@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::hash::{Hash, Hasher};
 use std::io::Error as ioError;
 use std::iter::FromIterator;
 
@@ -6,10 +7,24 @@ fn main() {
     println!("Part One: {}", part_one_solution());
 }
 
-#[derive(Hash, Eq, PartialEq, Debug, Clone)]
+#[derive(Eq, Debug, Clone)]
 struct GridPoint {
     x: i32,
     y: i32,
+    total_distance: u64,
+}
+
+impl Hash for GridPoint {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.x.hash(state);
+        self.y.hash(state);
+    }
+}
+
+impl PartialEq for GridPoint {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
+    }
 }
 
 fn part_one_solution() -> i32 {
@@ -19,7 +34,11 @@ fn part_one_solution() -> i32 {
 
     let mut common_points: HashSet<_> = first_move_list.intersection(&second_move_list).collect();
 
-    common_points.remove(&GridPoint { x: 0, y: 0 });
+    common_points.remove(&GridPoint {
+        x: 0,
+        y: 0,
+        total_distance: 0,
+    });
 
     let mut distances: Vec<i32> = common_points
         .into_iter()
@@ -31,7 +50,7 @@ fn part_one_solution() -> i32 {
     distances[0]
 }
 
-fn part_two_solution() -> {
+fn part_two_solution() {
     // add additional field to GridPoint struct, total_distance
     // whenever a new GridPoint is constructed increment the total_distance by 1
     // get the intersection of both lines
@@ -40,14 +59,22 @@ fn part_two_solution() -> {
 }
 
 fn find_manhattan_distance(coordinate: GridPoint) -> i32 {
-    let central_port = GridPoint { x: 0, y: 0 };
+    let central_port = GridPoint {
+        x: 0,
+        y: 0,
+        total_distance: 0,
+    };
 
     return ((coordinate.x - central_port.x).abs()) + ((coordinate.y - central_port.y).abs());
 }
 
 fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
     let moves_vec: Vec<&str> = moves.split(",").collect();
-    let mut coordinates: Vec<GridPoint> = vec![GridPoint { x: 0, y: 0 }];
+    let mut coordinates: Vec<GridPoint> = vec![GridPoint {
+        x: 0,
+        y: 0,
+        total_distance: 0,
+    }];
 
     for movement in moves_vec {
         let direction = movement.chars().nth(0).unwrap();
@@ -59,6 +86,7 @@ fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
                     coordinates.push(GridPoint {
                         x: coordinate,
                         y: coordinates.last().unwrap().y,
+                        total_distance: coordinates.last().unwrap().total_distance + 1,
                     });
                 }
             }
@@ -68,6 +96,7 @@ fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
                     coordinates.push(GridPoint {
                         x: coordinates.last().unwrap().x,
                         y: coordinate,
+                        total_distance: coordinates.last().unwrap().total_distance + 1,
                     });
                 }
             }
@@ -78,6 +107,7 @@ fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
                     coordinates.push(GridPoint {
                         x: coordinates.last().unwrap().x - 1,
                         y: coordinates.last().unwrap().y,
+                        total_distance: coordinates.last().unwrap().total_distance + 1,
                     });
                     counter -= 1;
                 }
@@ -89,6 +119,7 @@ fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
                     coordinates.push(GridPoint {
                         x: coordinates.last().unwrap().x,
                         y: coordinates.last().unwrap().y - 1,
+                        total_distance: coordinates.last().unwrap().total_distance + 1,
                     });
                     counter -= 1;
                 }
@@ -122,13 +153,33 @@ mod tests {
         assert_eq!(
             create_list_of_points(String::from("U4")),
             HashSet::from_iter(vec![
-                GridPoint { x: 0, y: 0 },
-                GridPoint { x: 0, y: 1 },
-                GridPoint { x: 0, y: 2 },
-                GridPoint { x: 0, y: 3 },
-                GridPoint { x: 0, y: 4 },
+                GridPoint {
+                    x: 0,
+                    y: 0,
+                    total_distance: 0,
+                },
+                GridPoint {
+                    x: 0,
+                    y: 1,
+                    total_distance: 1,
+                },
+                GridPoint {
+                    x: 0,
+                    y: 2,
+                    total_distance: 2,
+                },
+                GridPoint {
+                    x: 0,
+                    y: 3,
+                    total_distance: 3,
+                },
+                GridPoint {
+                    x: 0,
+                    y: 4,
+                    total_distance: 4,
+                },
             ])
-        );
+        )
     }
 
     #[test]
@@ -136,11 +187,31 @@ mod tests {
         assert_eq!(
             create_list_of_points(String::from("R4")),
             HashSet::from_iter(vec![
-                GridPoint { x: 0, y: 0 },
-                GridPoint { x: 1, y: 0 },
-                GridPoint { x: 2, y: 0 },
-                GridPoint { x: 3, y: 0 },
-                GridPoint { x: 4, y: 0 },
+                GridPoint {
+                    x: 0,
+                    y: 0,
+                    total_distance: 0
+                },
+                GridPoint {
+                    x: 1,
+                    y: 0,
+                    total_distance: 1
+                },
+                GridPoint {
+                    x: 2,
+                    y: 0,
+                    total_distance: 2
+                },
+                GridPoint {
+                    x: 3,
+                    y: 0,
+                    total_distance: 3
+                },
+                GridPoint {
+                    x: 4,
+                    y: 0,
+                    total_distance: 4
+                },
             ])
         );
     }
@@ -150,11 +221,31 @@ mod tests {
         assert_eq!(
             create_list_of_points(String::from("L4")),
             HashSet::from_iter(vec![
-                GridPoint { x: 0, y: 0 },
-                GridPoint { x: -1, y: 0 },
-                GridPoint { x: -2, y: 0 },
-                GridPoint { x: -3, y: 0 },
-                GridPoint { x: -4, y: 0 },
+                GridPoint {
+                    x: 0,
+                    y: 0,
+                    total_distance: 0
+                },
+                GridPoint {
+                    x: -1,
+                    y: 0,
+                    total_distance: 1
+                },
+                GridPoint {
+                    x: -2,
+                    y: 0,
+                    total_distance: 2
+                },
+                GridPoint {
+                    x: -3,
+                    y: 0,
+                    total_distance: 3
+                },
+                GridPoint {
+                    x: -4,
+                    y: 0,
+                    total_distance: 4
+                },
             ])
         )
     }
@@ -164,46 +255,136 @@ mod tests {
         assert_eq!(
             create_list_of_points(String::from("D4")),
             HashSet::from_iter(vec![
-                GridPoint { x: 0, y: 0 },
-                GridPoint { x: 0, y: -1 },
-                GridPoint { x: 0, y: -2 },
-                GridPoint { x: 0, y: -3 },
-                GridPoint { x: 0, y: -4 },
+                GridPoint {
+                    x: 0,
+                    y: 0,
+                    total_distance: 0
+                },
+                GridPoint {
+                    x: 0,
+                    y: -1,
+                    total_distance: 1
+                },
+                GridPoint {
+                    x: 0,
+                    y: -2,
+                    total_distance: 2
+                },
+                GridPoint {
+                    x: 0,
+                    y: -3,
+                    total_distance: 3
+                },
+                GridPoint {
+                    x: 0,
+                    y: -4,
+                    total_distance: 4
+                },
             ])
         )
     }
 
     #[test]
     fn test_create_list_of_points_handle_multiple_movements() {
-        assert_eq!(
-            create_list_of_points(String::from("U1,L3,R7,D2")),
-            HashSet::from_iter(vec![
-                GridPoint { x: 0, y: 0 },
-                GridPoint { x: 0, y: 1 },
-                GridPoint { x: -1, y: 1 },
-                GridPoint { x: -2, y: 1 },
-                GridPoint { x: -3, y: 1 },
-                GridPoint { x: -2, y: 1 },
-                GridPoint { x: -1, y: 1 },
-                GridPoint { x: 0, y: 1 },
-                GridPoint { x: 1, y: 1 },
-                GridPoint { x: 2, y: 1 },
-                GridPoint { x: 3, y: 1 },
-                GridPoint { x: 4, y: 1 },
-                GridPoint { x: 4, y: 1 },
-                GridPoint { x: 4, y: 0 },
-                GridPoint { x: 4, y: -1 },
-            ])
-        );
+        let actual = create_list_of_points(String::from("U1,L3,R7,D2"));
+        let expected = HashSet::from_iter(vec![
+            GridPoint {
+                x: 0,
+                y: 0,
+                total_distance: 0,
+            },
+            GridPoint {
+                x: 0,
+                y: 1,
+                total_distance: 1,
+            },
+            GridPoint {
+                x: -1,
+                y: 1,
+                total_distance: 2,
+            },
+            GridPoint {
+                x: -2,
+                y: 1,
+                total_distance: 3,
+            },
+            GridPoint {
+                x: -3,
+                y: 1,
+                total_distance: 4,
+            },
+            GridPoint {
+                x: -2,
+                y: 1,
+                total_distance: 5,
+            },
+            GridPoint {
+                x: -1,
+                y: 1,
+                total_distance: 6,
+            },
+            GridPoint {
+                x: 0,
+                y: 1,
+                total_distance: 7,
+            },
+            GridPoint {
+                x: 1,
+                y: 1,
+                total_distance: 8,
+            },
+            GridPoint {
+                x: 2,
+                y: 1,
+                total_distance: 9,
+            },
+            GridPoint {
+                x: 3,
+                y: 1,
+                total_distance: 10,
+            },
+            GridPoint {
+                x: 4,
+                y: 1,
+                total_distance: 11,
+            },
+            GridPoint {
+                x: 4,
+                y: 0,
+                total_distance: 12,
+            },
+            GridPoint {
+                x: 4,
+                y: -1,
+                total_distance: 13,
+            },
+        ]);
+        println!("actual len: {}", actual.len());
+        println!("expected len: {}", expected.len());
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn test_find_manhattan_distance() {
-        assert_eq!(find_manhattan_distance(GridPoint { x: 10, y: 10 }), 20);
+        assert_eq!(
+            find_manhattan_distance(GridPoint {
+                x: 10,
+                y: 10,
+                total_distance: 20
+            }),
+            20
+        );
     }
 
     #[test]
     fn test_find_manhattan_distance_with_negative_coordinates() {
-        assert_eq!(find_manhattan_distance(GridPoint { x: -10, y: -10 }), 20);
+        assert_eq!(
+            find_manhattan_distance(GridPoint {
+                x: -10,
+                y: -10,
+                total_distance: 20
+            }),
+            20
+        );
     }
 }
