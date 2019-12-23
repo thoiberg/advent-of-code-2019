@@ -74,7 +74,7 @@ fn find_manhattan_distance(coordinate: GridPoint) -> i32 {
         total_distance: 0,
     };
 
-    return ((coordinate.x - central_port.x).abs()) + ((coordinate.y - central_port.y).abs());
+    ((coordinate.x - central_port.x).abs()) + ((coordinate.y - central_port.y).abs())
 }
 
 fn find_smallest_path_to_intersection(first_point: &GridPoint, second_point: &GridPoint) -> u64 {
@@ -82,7 +82,7 @@ fn find_smallest_path_to_intersection(first_point: &GridPoint, second_point: &Gr
 }
 
 fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
-    let moves_vec: Vec<&str> = moves.split(",").collect();
+    let moves_vec: Vec<&str> = moves.split(',').collect();
     let mut coordinates: Vec<GridPoint> = vec![];
 
     for movement in moves_vec {
@@ -118,10 +118,7 @@ fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
 
 fn read_and_process_input() -> Result<Vec<String>, ioError> {
     let contents = include_str!("input_data");
-    Ok(contents
-        .split("\n")
-        .map(|route| String::from(route))
-        .collect())
+    Ok(contents.split('\n').map(String::from).collect())
 }
 
 #[cfg(test)]

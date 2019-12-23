@@ -10,3 +10,4 @@
 - What `derive` is and how it works
 - How does `cargo build` know to exclude the tests from consideration?
 - The `include_str` macro
+- Calling a function directly in a closure
