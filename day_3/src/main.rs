@@ -5,7 +5,7 @@ use std::io::Read;
 use std::iter::FromIterator;
 
 fn main() {
-    println!("{}", part_one_solution());
+    println!("Part One: {}", part_one_solution());
 }
 
 fn part_one_solution() -> i32 {
