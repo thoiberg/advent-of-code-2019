@@ -42,14 +42,14 @@ fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
         let distance_to_move = &movement[1..].parse::<i32>().unwrap();
         match direction {
             'R' => {
-                let step = coordinates.last().unwrap().0;
-                for coordinate in step + 1..=step + distance_to_move {
+                let last_position = coordinates.last().unwrap().0;
+                for coordinate in last_position + 1..=last_position + distance_to_move {
                     coordinates.push((coordinate, coordinates.last().unwrap().1));
                 }
             }
             'U' => {
-                let step = coordinates.last().unwrap().1;
-                for coordinate in step + 1..=step + distance_to_move {
+                let last_position = coordinates.last().unwrap().1;
+                for coordinate in last_position + 1..=last_position + distance_to_move {
                     coordinates.push((coordinates.last().unwrap().0, coordinate));
                 }
             }
