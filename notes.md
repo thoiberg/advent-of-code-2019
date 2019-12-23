@@ -7,6 +7,6 @@
 - `FromIterator`
 - How do I iterate down, (eg, from 10 -> 1)?
 - The `#[]` syntax
-- What `derive` and how it works
+- What `derive` is and how it works
 - How does `cargo build` know to exclude the tests from consideration?
 - The `include_str` macro

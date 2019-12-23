@@ -28,6 +28,16 @@ impl PartialEq for GridPoint {
     }
 }
 
+impl GridPoint {
+    fn move_steps(&self, x_steps: i32, y_steps: i32) -> GridPoint {
+        GridPoint {
+            x: self.x + x_steps,
+            y: self.y + y_steps,
+            total_distance: self.total_distance + 1,
+        }
+    }
+}
+
 fn part_one_solution() -> i32 {
     let moves = read_and_process_input().unwrap();
     let first_move_list = create_list_of_points(moves[0].clone());
@@ -103,56 +113,21 @@ fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
     for movement in moves_vec {
         let direction = movement.chars().nth(0).unwrap();
         let distance_to_move = movement[1..].parse::<i32>().unwrap().to_owned();
-        match direction {
-            'R' => {
-                let mut counter = 0;
-                while counter < distance_to_move {
-                    coordinates.push(GridPoint {
-                        x: coordinates.last().unwrap().x + 1,
-                        y: coordinates.last().unwrap().y,
-                        total_distance: coordinates.last().unwrap().total_distance + 1,
-                    });
-
-                    counter += 1;
-                }
-            }
-            'U' => {
-                let mut counter = 0;
-                while counter < distance_to_move {
-                    coordinates.push(GridPoint {
-                        x: coordinates.last().unwrap().x,
-                        y: coordinates.last().unwrap().y + 1,
-                        total_distance: coordinates.last().unwrap().total_distance + 1,
-                    });
-
-                    counter += 1;
-                }
-            }
-            'L' => {
-                let mut counter = distance_to_move;
-
-                while counter > 0 {
-                    coordinates.push(GridPoint {
-                        x: coordinates.last().unwrap().x - 1,
-                        y: coordinates.last().unwrap().y,
-                        total_distance: coordinates.last().unwrap().total_distance + 1,
-                    });
-                    counter -= 1;
-                }
-            }
-            'D' => {
-                let mut counter = distance_to_move;
-
-                while counter > 0 {
-                    coordinates.push(GridPoint {
-                        x: coordinates.last().unwrap().x,
-                        y: coordinates.last().unwrap().y - 1,
-                        total_distance: coordinates.last().unwrap().total_distance + 1,
-                    });
-                    counter -= 1;
-                }
-            }
+        let movement_steps = match direction {
+            'R' => (1, 0),
+            'U' => (0, 1),
+            'L' => (-1, 0),
+            'D' => (0, -1),
             _ => panic!("Unexpected direction, exiting"),
+        };
+
+        for _ in 1..=distance_to_move {
+            let last_coordinate = coordinates.last().unwrap().clone();
+            coordinates.push(GridPoint {
+                x: last_coordinate.x + movement_steps.0,
+                y: last_coordinate.y + movement_steps.1,
+                total_distance: last_coordinate.total_distance + 1,
+            })
         }
     }
 
