@@ -6,6 +6,12 @@ fn main() {
     println!("Part One: {}", part_one_solution());
 }
 
+#[derive(Hash, Eq, PartialEq, Debug, Clone)]
+struct GridPoint {
+    x: i32,
+    y: i32,
+}
+
 fn part_one_solution() -> i32 {
     let moves = read_and_process_input().unwrap();
     let first_move_list = create_list_of_points(moves[0].clone());
@@ -13,7 +19,7 @@ fn part_one_solution() -> i32 {
 
     let mut common_points: HashSet<_> = first_move_list.intersection(&second_move_list).collect();
 
-    common_points.remove(&(0, 0));
+    common_points.remove(&GridPoint { x: 0, y: 0 });
 
     let mut distances: Vec<i32> = common_points
         .into_iter()
@@ -25,40 +31,46 @@ fn part_one_solution() -> i32 {
     distances[0]
 }
 
-fn find_manhattan_distance(coordinate: (i32, i32)) -> i32 {
-    let central_port = (0, 0);
+fn find_manhattan_distance(coordinate: GridPoint) -> i32 {
+    let central_port = GridPoint { x: 0, y: 0 };
 
-    return ((coordinate.0 - central_port.0).abs()) + ((coordinate.1 - central_port.1).abs());
+    return ((coordinate.x - central_port.x).abs()) + ((coordinate.y - central_port.y).abs());
 }
 
-fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
+fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
     let moves_vec: Vec<&str> = moves.split(",").collect();
-    let mut coordinates: Vec<(i32, i32)> = vec![(0, 0)];
+    let mut coordinates: Vec<GridPoint> = vec![GridPoint { x: 0, y: 0 }];
 
     for movement in moves_vec {
         let direction = movement.chars().nth(0).unwrap();
         let distance_to_move = movement[1..].parse::<i32>().unwrap().to_owned();
         match direction {
             'R' => {
-                let last_position = coordinates.last().unwrap().0;
+                let last_position = coordinates.last().unwrap().x;
                 for coordinate in last_position + 1..=last_position + distance_to_move {
-                    coordinates.push((coordinate, coordinates.last().unwrap().1));
+                    coordinates.push(GridPoint {
+                        x: coordinate,
+                        y: coordinates.last().unwrap().y,
+                    });
                 }
             }
             'U' => {
-                let last_position = coordinates.last().unwrap().1;
+                let last_position = coordinates.last().unwrap().y;
                 for coordinate in last_position + 1..=last_position + distance_to_move {
-                    coordinates.push((coordinates.last().unwrap().0, coordinate));
+                    coordinates.push(GridPoint {
+                        x: coordinates.last().unwrap().x,
+                        y: coordinate,
+                    });
                 }
             }
             'L' => {
                 let mut counter = distance_to_move;
 
                 while counter > 0 {
-                    coordinates.push((
-                        (coordinates.last().unwrap().0) - 1,
-                        coordinates.last().unwrap().1,
-                    ));
+                    coordinates.push(GridPoint {
+                        x: coordinates.last().unwrap().x - 1,
+                        y: coordinates.last().unwrap().y,
+                    });
                     counter -= 1;
                 }
             }
@@ -66,10 +78,10 @@ fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
                 let mut counter = distance_to_move;
 
                 while counter > 0 {
-                    coordinates.push((
-                        (coordinates.last().unwrap().0),
-                        coordinates.last().unwrap().1 - 1,
-                    ));
+                    coordinates.push(GridPoint {
+                        x: coordinates.last().unwrap().x,
+                        y: coordinates.last().unwrap().y - 1,
+                    });
                     counter -= 1;
                 }
             }
@@ -101,7 +113,13 @@ mod tests {
     fn test_create_list_of_points_process_up() {
         assert_eq!(
             create_list_of_points(String::from("U4")),
-            HashSet::from_iter(vec![(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)])
+            HashSet::from_iter(vec![
+                GridPoint { x: 0, y: 0 },
+                GridPoint { x: 0, y: 1 },
+                GridPoint { x: 0, y: 2 },
+                GridPoint { x: 0, y: 3 },
+                GridPoint { x: 0, y: 4 },
+            ])
         );
     }
 
@@ -109,7 +127,13 @@ mod tests {
     fn test_create_list_of_points_process_right() {
         assert_eq!(
             create_list_of_points(String::from("R4")),
-            HashSet::from_iter(vec![(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)])
+            HashSet::from_iter(vec![
+                GridPoint { x: 0, y: 0 },
+                GridPoint { x: 1, y: 0 },
+                GridPoint { x: 2, y: 0 },
+                GridPoint { x: 3, y: 0 },
+                GridPoint { x: 4, y: 0 },
+            ])
         );
     }
 
@@ -117,7 +141,13 @@ mod tests {
     fn test_create_list_of_points_process_left() {
         assert_eq!(
             create_list_of_points(String::from("L4")),
-            HashSet::from_iter(vec![(0, 0), (-1, 0), (-2, 0), (-3, 0), (-4, 0)])
+            HashSet::from_iter(vec![
+                GridPoint { x: 0, y: 0 },
+                GridPoint { x: -1, y: 0 },
+                GridPoint { x: -2, y: 0 },
+                GridPoint { x: -3, y: 0 },
+                GridPoint { x: -4, y: 0 },
+            ])
         )
     }
 
@@ -125,7 +155,13 @@ mod tests {
     fn test_create_list_of_points_process_down() {
         assert_eq!(
             create_list_of_points(String::from("D4")),
-            HashSet::from_iter(vec![(0, 0), (0, -1), (0, -2), (0, -3), (0, -4)])
+            HashSet::from_iter(vec![
+                GridPoint { x: 0, y: 0 },
+                GridPoint { x: 0, y: -1 },
+                GridPoint { x: 0, y: -2 },
+                GridPoint { x: 0, y: -3 },
+                GridPoint { x: 0, y: -4 },
+            ])
         )
     }
 
@@ -134,31 +170,32 @@ mod tests {
         assert_eq!(
             create_list_of_points(String::from("U1,L3,R7,D2")),
             HashSet::from_iter(vec![
-                (0, 0),
-                (0, 1),
-                (-1, 1),
-                (-2, 1),
-                (-3, 1),
-                (-2, 1),
-                (-1, 1),
-                (0, 1),
-                (1, 1),
-                (2, 1),
-                (3, 1),
-                (4, 1),
-                (4, 0),
-                (4, -1),
+                GridPoint { x: 0, y: 0 },
+                GridPoint { x: 0, y: 1 },
+                GridPoint { x: -1, y: 1 },
+                GridPoint { x: -2, y: 1 },
+                GridPoint { x: -3, y: 1 },
+                GridPoint { x: -2, y: 1 },
+                GridPoint { x: -1, y: 1 },
+                GridPoint { x: 0, y: 1 },
+                GridPoint { x: 1, y: 1 },
+                GridPoint { x: 2, y: 1 },
+                GridPoint { x: 3, y: 1 },
+                GridPoint { x: 4, y: 1 },
+                GridPoint { x: 4, y: 1 },
+                GridPoint { x: 4, y: 0 },
+                GridPoint { x: 4, y: -1 },
             ])
         );
     }
 
     #[test]
     fn test_find_manhattan_distance() {
-        assert_eq!(find_manhattan_distance((10, 10)), 20);
+        assert_eq!(find_manhattan_distance(GridPoint { x: 10, y: 10 }), 20);
     }
 
     #[test]
     fn test_find_manhattan_distance_with_negative_coordinates() {
-        assert_eq!(find_manhattan_distance((-10, -10)), 20);
+        assert_eq!(find_manhattan_distance(GridPoint { x: -10, y: -10 }), 20);
     }
 }
