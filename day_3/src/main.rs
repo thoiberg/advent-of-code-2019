@@ -39,7 +39,7 @@ fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
 
     for movement in moves_vec {
         let direction = movement.chars().nth(0).unwrap();
-        let distance_to_move: &i32 = &movement[1..].parse().unwrap();
+        let distance_to_move = movement[1..].parse::<i32>().unwrap().to_owned();
         match direction {
             'R' => {
                 let last_position = coordinates.last().unwrap().0;
@@ -54,7 +54,7 @@ fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
                 }
             }
             'L' => {
-                let mut counter = distance_to_move.to_owned();
+                let mut counter = distance_to_move;
 
                 while counter > 0 {
                     coordinates.push((
@@ -65,7 +65,7 @@ fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
                 }
             }
             'D' => {
-                let mut counter = distance_to_move.to_owned();
+                let mut counter = distance_to_move;
 
                 while counter > 0 {
                     coordinates.push((
