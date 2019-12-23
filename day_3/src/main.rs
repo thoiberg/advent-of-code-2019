@@ -31,6 +31,14 @@ fn part_one_solution() -> i32 {
     distances[0]
 }
 
+fn part_two_solution() -> {
+    // add additional field to GridPoint struct, total_distance
+    // whenever a new GridPoint is constructed increment the total_distance by 1
+    // get the intersection of both lines
+    // for each intersection sum the values of both total_distances
+    // sort by the summed value and return lowest
+}
+
 fn find_manhattan_distance(coordinate: GridPoint) -> i32 {
     let central_port = GridPoint { x: 0, y: 0 };
 
