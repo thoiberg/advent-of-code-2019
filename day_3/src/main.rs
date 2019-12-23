@@ -28,28 +28,12 @@ impl PartialEq for GridPoint {
     }
 }
 
-impl GridPoint {
-    fn move_steps(&self, x_steps: i32, y_steps: i32) -> GridPoint {
-        GridPoint {
-            x: self.x + x_steps,
-            y: self.y + y_steps,
-            total_distance: self.total_distance + 1,
-        }
-    }
-}
-
 fn part_one_solution() -> i32 {
     let moves = read_and_process_input().unwrap();
     let first_move_list = create_list_of_points(moves[0].clone());
     let second_move_list = create_list_of_points(moves[1].clone());
 
-    let mut common_points: HashSet<_> = first_move_list.intersection(&second_move_list).collect();
-
-    common_points.remove(&GridPoint {
-        x: 0,
-        y: 0,
-        total_distance: 0,
-    });
+    let common_points: HashSet<_> = first_move_list.intersection(&second_move_list).collect();
 
     let mut distances: Vec<i32> = common_points
         .into_iter()
@@ -66,12 +50,7 @@ fn part_two_solution() -> u64 {
     let first_move_list = create_list_of_points(moves[0].clone());
     let second_move_list = create_list_of_points(moves[1].clone());
 
-    let mut common_points: HashSet<_> = first_move_list.intersection(&second_move_list).collect();
-    common_points.remove(&GridPoint {
-        x: 0,
-        y: 0,
-        total_distance: 0,
-    });
+    let common_points: HashSet<_> = first_move_list.intersection(&second_move_list).collect();
 
     let mut distances: Vec<u64> = common_points
         .into_iter()
@@ -104,11 +83,7 @@ fn find_smallest_path_to_intersection(first_point: &GridPoint, second_point: &Gr
 
 fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
     let moves_vec: Vec<&str> = moves.split(",").collect();
-    let mut coordinates: Vec<GridPoint> = vec![GridPoint {
-        x: 0,
-        y: 0,
-        total_distance: 0,
-    }];
+    let mut coordinates: Vec<GridPoint> = vec![];
 
     for movement in moves_vec {
         let direction = movement.chars().nth(0).unwrap();
@@ -122,7 +97,14 @@ fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
         };
 
         for _ in 1..=distance_to_move {
-            let last_coordinate = coordinates.last().unwrap().clone();
+            let last_coordinate = coordinates
+                .last()
+                .unwrap_or(&GridPoint {
+                    x: 0,
+                    y: 0,
+                    total_distance: 0,
+                })
+                .clone();
             coordinates.push(GridPoint {
                 x: last_coordinate.x + movement_steps.0,
                 y: last_coordinate.y + movement_steps.1,
@@ -163,11 +145,6 @@ mod tests {
             HashSet::from_iter(vec![
                 GridPoint {
                     x: 0,
-                    y: 0,
-                    total_distance: 0,
-                },
-                GridPoint {
-                    x: 0,
                     y: 1,
                     total_distance: 1,
                 },
@@ -195,11 +172,6 @@ mod tests {
         assert_eq!(
             create_list_of_points(String::from("R4")),
             HashSet::from_iter(vec![
-                GridPoint {
-                    x: 0,
-                    y: 0,
-                    total_distance: 0
-                },
                 GridPoint {
                     x: 1,
                     y: 0,
@@ -229,11 +201,6 @@ mod tests {
         assert_eq!(
             create_list_of_points(String::from("L4")),
             HashSet::from_iter(vec![
-                GridPoint {
-                    x: 0,
-                    y: 0,
-                    total_distance: 0
-                },
                 GridPoint {
                     x: -1,
                     y: 0,
@@ -265,11 +232,6 @@ mod tests {
             HashSet::from_iter(vec![
                 GridPoint {
                     x: 0,
-                    y: 0,
-                    total_distance: 0
-                },
-                GridPoint {
-                    x: 0,
                     y: -1,
                     total_distance: 1
                 },
@@ -296,11 +258,6 @@ mod tests {
     fn test_create_list_of_points_handle_multiple_movements() {
         let actual = create_list_of_points(String::from("U1,L3,R7,D2"));
         let expected = HashSet::from_iter(vec![
-            GridPoint {
-                x: 0,
-                y: 0,
-                total_distance: 0,
-            },
             GridPoint {
                 x: 0,
                 y: 1,
