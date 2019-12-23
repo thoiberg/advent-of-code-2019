@@ -1,7 +1,5 @@
 use std::collections::HashSet;
-use std::fs::File;
 use std::io::Error as ioError;
-use std::io::Read;
 use std::iter::FromIterator;
 
 fn main() {
@@ -83,9 +81,7 @@ fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
 }
 
 fn read_and_process_input() -> Result<Vec<String>, ioError> {
-    let mut raw_input_data = File::open("src/input_data")?;
-    let mut contents = String::new();
-    raw_input_data.read_to_string(&mut contents)?;
+    let contents = include_str!("input_data");
     Ok(contents
         .split("\n")
         .map(|route| String::from(route))
