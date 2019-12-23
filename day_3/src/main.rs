@@ -105,23 +105,27 @@ fn create_list_of_points(moves: String) -> HashSet<GridPoint> {
         let distance_to_move = movement[1..].parse::<i32>().unwrap().to_owned();
         match direction {
             'R' => {
-                let last_position = coordinates.last().unwrap().x;
-                for coordinate in last_position + 1..=last_position + distance_to_move {
+                let mut counter = 0;
+                while counter < distance_to_move {
                     coordinates.push(GridPoint {
-                        x: coordinate,
+                        x: coordinates.last().unwrap().x + 1,
                         y: coordinates.last().unwrap().y,
                         total_distance: coordinates.last().unwrap().total_distance + 1,
                     });
+
+                    counter += 1;
                 }
             }
             'U' => {
-                let last_position = coordinates.last().unwrap().y;
-                for coordinate in last_position + 1..=last_position + distance_to_move {
+                let mut counter = 0;
+                while counter < distance_to_move {
                     coordinates.push(GridPoint {
                         x: coordinates.last().unwrap().x,
-                        y: coordinate,
+                        y: coordinates.last().unwrap().y + 1,
                         total_distance: coordinates.last().unwrap().total_distance + 1,
                     });
+
+                    counter += 1;
                 }
             }
             'L' => {
@@ -388,8 +392,7 @@ mod tests {
                 total_distance: 13,
             },
         ]);
-        println!("actual len: {}", actual.len());
-        println!("expected len: {}", expected.len());
+
         assert_eq!(actual, expected);
     }
 
