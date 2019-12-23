@@ -13,7 +13,6 @@ fn part_one_solution() -> i32 {
     let first_move_list = create_list_of_points(moves[0].clone());
     let second_move_list = create_list_of_points(moves[1].clone());
 
-    // TODO What does <_> mean?
     let mut common_points: HashSet<_> = first_move_list.intersection(&second_move_list).collect();
 
     common_points.remove(&(0, 0));
@@ -55,7 +54,6 @@ fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
                 }
             }
             'L' => {
-                // TODO: the difference between to_owned and clone
                 let mut counter = distance_to_move.to_owned();
 
                 while counter > 0 {
@@ -81,7 +79,6 @@ fn create_list_of_points(moves: String) -> HashSet<(i32, i32)> {
         }
     }
 
-    // TODO figure out what cloned() does
     HashSet::from_iter(coordinates.iter().cloned())
 }
 
