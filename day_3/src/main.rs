@@ -52,16 +52,11 @@ fn part_one_solution() -> i32 {
 }
 
 fn part_two_solution() -> u64 {
-    // add additional field to GridPoint struct, total_distance
-    // whenever a new GridPoint is constructed increment the total_distance by 1
-    // get the intersection of both lines
     let moves = read_and_process_input().unwrap();
     let first_move_list = create_list_of_points(moves[0].clone());
     let second_move_list = create_list_of_points(moves[1].clone());
 
     let mut common_points: HashSet<_> = first_move_list.intersection(&second_move_list).collect();
-    // for each intersection sum the values of both total_distances
-    // sort by the summed value and return lowest
     common_points.remove(&GridPoint {
         x: 0,
         y: 0,
@@ -71,11 +66,13 @@ fn part_two_solution() -> u64 {
     let mut distances: Vec<u64> = common_points
         .into_iter()
         .map(|point| {
-            find_smallest_path_to_intersection(point.clone(), &first_move_list, &second_move_list)
+            find_smallest_path_to_intersection(
+                &first_move_list.get(&point).unwrap(),
+                &second_move_list.get(&point).unwrap(),
+            )
         })
         .collect();
 
-    println!("total distances: {}", distances.len());
     distances.sort();
 
     distances[0]
@@ -91,14 +88,7 @@ fn find_manhattan_distance(coordinate: GridPoint) -> i32 {
     return ((coordinate.x - central_port.x).abs()) + ((coordinate.y - central_port.y).abs());
 }
 
-fn find_smallest_path_to_intersection(
-    point: GridPoint,
-    first_move_list: &HashSet<GridPoint>,
-    second_move_list: &HashSet<GridPoint>,
-) -> u64 {
-    let first_point = first_move_list.get(&point).unwrap();
-    let second_point = second_move_list.get(&point).unwrap();
-
+fn find_smallest_path_to_intersection(first_point: &GridPoint, second_point: &GridPoint) -> u64 {
     first_point.total_distance + second_point.total_distance
 }
 
@@ -424,6 +414,25 @@ mod tests {
                 total_distance: 20
             }),
             20
+        );
+    }
+
+    #[test]
+    fn test_find_smallest_path_to_intersection() {
+        assert_eq!(
+            find_smallest_path_to_intersection(
+                &GridPoint {
+                    x: 10,
+                    y: 10,
+                    total_distance: 20
+                },
+                &GridPoint {
+                    x: 5,
+                    y: 3,
+                    total_distance: 8
+                }
+            ),
+            28
         );
     }
 }
