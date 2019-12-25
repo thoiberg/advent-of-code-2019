@@ -2,6 +2,7 @@ use std::ops::Range;
 
 fn main() {
     println!("Part One: {}", part_one_solution());
+    println!("Part Two: {}", part_two_solution());
 }
 
 fn part_one_solution() -> usize {
@@ -15,18 +16,66 @@ fn part_one_solution() -> usize {
     })
 }
 
+fn part_two_solution() -> usize {
+    let input_data = input_data();
+    input_data.into_iter().fold(0, |acc, number| {
+        if number_meets_part_two_requirements(number) {
+            acc + 1
+        } else {
+            acc
+        }
+    })
+}
+
 fn number_meets_requirements(number: usize) -> bool {
-    // number meets requirements if:
-    // digits only increase or stay the same as they go from left to right
-    // there is at least one repeat in the number
     number_has_repeating_digits(number) && number_increases_or_stays_the_same(number)
+}
+
+fn number_meets_part_two_requirements(number: usize) -> bool {
+    number_has_correct_repeating_digits(number) && number_increases_or_stays_the_same(number)
+}
+
+fn number_has_correct_repeating_digits(number: usize) -> bool {
+    for (position, digit) in number.to_string().chars().enumerate() {
+        if position == 0 {
+            continue;
+        } else if position == 1 {
+            let previous_digit = number.to_string().chars().nth(position - 1).unwrap_or('a');
+            let next_digit = number.to_string().chars().nth(position + 1).unwrap_or('a');
+            let more_next_digit = number.to_string().chars().nth(position + 2).unwrap_or('a');
+
+            if digit == previous_digit && digit != next_digit && digit != more_next_digit {
+                return true;
+            }
+            if digit == next_digit && digit != more_next_digit && digit != previous_digit {
+                return true;
+            }
+        } else {
+            let previous_digit = number.to_string().chars().nth(position - 1).unwrap_or('a');
+            let more_previous_digit = number.to_string().chars().nth(position - 2).unwrap_or('a');
+            let next_digit = number.to_string().chars().nth(position + 1).unwrap_or('a');
+            let more_next_digit = number.to_string().chars().nth(position + 2).unwrap_or('a');
+
+            if digit == previous_digit && digit == more_previous_digit {
+                continue;
+            } else if digit == next_digit && digit == more_next_digit {
+                continue;
+            } else if digit == next_digit && digit == previous_digit {
+                continue;
+            } else if digit == previous_digit || digit == next_digit {
+                return true;
+            } else {
+                continue;
+            }
+        }
+    }
+
+    false
 }
 
 fn number_has_repeating_digits(number: usize) -> bool {
     for (position, digit) in number.to_string().chars().enumerate() {
         if position == 0 {
-            // then we're at the start of the number, and should
-            // automatically continue to the next digit
             continue;
         }
         let previous_digit = number.to_string().chars().nth(position - 1).unwrap();
@@ -41,8 +90,6 @@ fn number_has_repeating_digits(number: usize) -> bool {
 fn number_increases_or_stays_the_same(number: usize) -> bool {
     for (position, digit) in number.to_string().chars().enumerate() {
         if position == 0 {
-            // then we're at the start of the number, and should
-            // automatically continue to the next digit
             continue;
         }
 
@@ -66,6 +113,11 @@ mod tests {
     #[test]
     fn test_part_one_solution() {
         assert_eq!(part_one_solution(), 1675);
+    }
+
+    #[test]
+    fn test_part_two_solution() {
+        assert_eq!(part_two_solution(), 1142);
     }
 
     #[test]
@@ -100,5 +152,35 @@ mod tests {
     fn test_number_increases_or_stays_the_same_returns_false() {
         assert_eq!(number_increases_or_stays_the_same(987654), false);
         assert_eq!(number_increases_or_stays_the_same(123451), false);
+    }
+
+    #[test]
+    fn test_number_meets_part_two_requirements_returns_true() {
+        assert_eq!(number_meets_part_two_requirements(112233), true);
+        assert_eq!(number_meets_part_two_requirements(111122), true);
+        assert_eq!(number_meets_part_two_requirements(111223), true);
+        assert_eq!(number_meets_part_two_requirements(112345), true);
+        assert_eq!(number_meets_part_two_requirements(123445), true);
+        assert_eq!(number_meets_part_two_requirements(122333), true);
+        assert_eq!(number_meets_part_two_requirements(122233), true);
+        assert_eq!(number_meets_part_two_requirements(123345), true);
+    }
+
+    #[test]
+    fn test_number_meets_part_two_requirements_returns_false() {
+        assert_eq!(number_meets_part_two_requirements(123444), false);
+        assert_eq!(number_meets_part_two_requirements(111111), false);
+        assert_eq!(number_meets_part_two_requirements(111112), false);
+        assert_eq!(number_meets_part_two_requirements(211333), false);
+        assert_eq!(number_meets_part_two_requirements(111333), false);
+        assert_eq!(number_meets_part_two_requirements(123333), false);
+        assert_eq!(number_meets_part_two_requirements(123456), false);
+        assert_eq!(number_meets_part_two_requirements(123334), false);
+        assert_eq!(number_meets_part_two_requirements(111222), false);
+        assert_eq!(number_meets_part_two_requirements(111123), false);
+        assert_eq!(number_meets_part_two_requirements(122234), false);
+        assert_eq!(number_meets_part_two_requirements(122223), false);
+        assert_eq!(number_meets_part_two_requirements(123334), false);
+        assert_eq!(number_meets_part_two_requirements(123444), false);
     }
 }

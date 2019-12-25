@@ -12,3 +12,4 @@
 - The `include_str` macro
 - Calling a function directly in a closure
 - Difference between `usize` and `u16`/`u32`
+- passing in functions as arguments
