@@ -36,13 +36,13 @@ fn number_meets_part_two_requirements(number: &str) -> bool {
 }
 
 fn number_has_correct_repeating_digits(number: &str) -> bool {
-    for (position, digit) in number.chars().enumerate() {
+    for (position, digit) in number.bytes().enumerate() {
         if position == 0 {
             continue;
         } else if position == 1 {
-            let previous_digit = number.chars().nth(position - 1).unwrap_or('a');
-            let next_digit = number.chars().nth(position + 1).unwrap_or('a');
-            let more_next_digit = number.chars().nth(position + 2).unwrap_or('a');
+            let previous_digit = number.as_bytes().get(position - 1).cloned().unwrap_or(b'a');
+            let next_digit = number.as_bytes().get(position + 1).cloned().unwrap_or(b'a');
+            let more_next_digit = number.as_bytes().get(position + 2).cloned().unwrap_or(b'a');
 
             if digit == previous_digit && digit != next_digit && digit != more_next_digit {
                 return true;
@@ -51,10 +51,10 @@ fn number_has_correct_repeating_digits(number: &str) -> bool {
                 return true;
             }
         } else {
-            let previous_digit = number.chars().nth(position - 1).unwrap_or('a');
-            let more_previous_digit = number.chars().nth(position - 2).unwrap_or('a');
-            let next_digit = number.chars().nth(position + 1).unwrap_or('a');
-            let more_next_digit = number.chars().nth(position + 2).unwrap_or('a');
+            let previous_digit = number.as_bytes().get(position - 1).cloned().unwrap_or(b'a');
+            let more_previous_digit = number.as_bytes().get(position - 2).cloned().unwrap_or(b'a');
+            let next_digit = number.as_bytes().get(position + 1).cloned().unwrap_or(b'a');
+            let more_next_digit = number.as_bytes().get(position + 2).cloned().unwrap_or(b'a');
 
             if digit == previous_digit && digit == more_previous_digit {
                 continue;
@@ -74,11 +74,11 @@ fn number_has_correct_repeating_digits(number: &str) -> bool {
 }
 
 fn number_has_repeating_digits(number: &str) -> bool {
-    for (position, digit) in number.chars().enumerate() {
+    for (position, digit) in number.bytes().enumerate() {
         if position == 0 {
             continue;
         }
-        let previous_digit = number.chars().nth(position - 1).unwrap();
+        let previous_digit = number.as_bytes()[position - 1];
         if previous_digit == digit {
             return true;
         }
@@ -88,12 +88,12 @@ fn number_has_repeating_digits(number: &str) -> bool {
 }
 
 fn number_increases_or_stays_the_same(number: &str) -> bool {
-    for (position, digit) in number.chars().enumerate() {
+    for (position, digit) in number.bytes().enumerate() {
         if position == 0 {
             continue;
         }
 
-        let previous_digit = number.chars().nth(position - 1).unwrap();
+        let previous_digit = number.as_bytes()[position - 1];
         if digit < previous_digit {
             return false;
         }
