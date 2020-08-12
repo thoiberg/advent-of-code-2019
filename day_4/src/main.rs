@@ -8,7 +8,7 @@ fn main() {
 fn part_one_solution() -> usize {
     let input_data = input_data();
     input_data.into_iter().fold(0, |acc, number| {
-        if number_meets_requirements(number) {
+        if number_meets_requirements(&number.to_string()) {
             acc + 1
         } else {
             acc
@@ -19,7 +19,7 @@ fn part_one_solution() -> usize {
 fn part_two_solution() -> usize {
     let input_data = input_data();
     input_data.into_iter().fold(0, |acc, number| {
-        if number_meets_part_two_requirements(number) {
+        if number_meets_part_two_requirements(&number.to_string()) {
             acc + 1
         } else {
             acc
@@ -27,23 +27,22 @@ fn part_two_solution() -> usize {
     })
 }
 
-fn number_meets_requirements(number: usize) -> bool {
+fn number_meets_requirements(number: &str) -> bool {
     number_has_repeating_digits(number) && number_increases_or_stays_the_same(number)
 }
 
-fn number_meets_part_two_requirements(number: usize) -> bool {
+fn number_meets_part_two_requirements(number: &str) -> bool {
     number_has_correct_repeating_digits(number) && number_increases_or_stays_the_same(number)
 }
 
-fn number_has_correct_repeating_digits(number: usize) -> bool {
-    for (position, digit) in number.to_string().chars().enumerate() {
+fn number_has_correct_repeating_digits(number: &str) -> bool {
+    for (position, digit) in number.bytes().enumerate() {
         if position == 0 {
             continue;
         } else if position == 1 {
-            let number_str = number.to_string();
-            let previous_digit = number_str.chars().nth(position - 1).unwrap_or('a');
-            let next_digit = number_str.chars().nth(position + 1).unwrap_or('a');
-            let more_next_digit = number_str.chars().nth(position + 2).unwrap_or('a');
+            let previous_digit = number.as_bytes().get(position - 1).cloned().unwrap_or(b'a');
+            let next_digit = number.as_bytes().get(position + 1).cloned().unwrap_or(b'a');
+            let more_next_digit = number.as_bytes().get(position + 2).cloned().unwrap_or(b'a');
 
             if digit == previous_digit && digit != next_digit && digit != more_next_digit {
                 return true;
@@ -52,11 +51,10 @@ fn number_has_correct_repeating_digits(number: usize) -> bool {
                 return true;
             }
         } else {
-            let number_str = number.to_string();
-            let previous_digit = number_str.chars().nth(position - 1).unwrap_or('a');
-            let more_previous_digit = number_str.chars().nth(position - 2).unwrap_or('a');
-            let next_digit = number_str.chars().nth(position + 1).unwrap_or('a');
-            let more_next_digit = number_str.chars().nth(position + 2).unwrap_or('a');
+            let previous_digit = number.as_bytes().get(position - 1).cloned().unwrap_or(b'a');
+            let more_previous_digit = number.as_bytes().get(position - 2).cloned().unwrap_or(b'a');
+            let next_digit = number.as_bytes().get(position + 1).cloned().unwrap_or(b'a');
+            let more_next_digit = number.as_bytes().get(position + 2).cloned().unwrap_or(b'a');
 
             if digit == previous_digit && digit == more_previous_digit {
                 continue;
@@ -75,12 +73,12 @@ fn number_has_correct_repeating_digits(number: usize) -> bool {
     false
 }
 
-fn number_has_repeating_digits(number: usize) -> bool {
-    for (position, digit) in number.to_string().chars().enumerate() {
+fn number_has_repeating_digits(number: &str) -> bool {
+    for (position, digit) in number.bytes().enumerate() {
         if position == 0 {
             continue;
         }
-        let previous_digit = number.to_string().chars().nth(position - 1).unwrap();
+        let previous_digit = number.as_bytes()[position - 1];
         if previous_digit == digit {
             return true;
         }
@@ -89,13 +87,13 @@ fn number_has_repeating_digits(number: usize) -> bool {
     false
 }
 
-fn number_increases_or_stays_the_same(number: usize) -> bool {
-    for (position, digit) in number.to_string().chars().enumerate() {
+fn number_increases_or_stays_the_same(number: &str) -> bool {
+    for (position, digit) in number.bytes().enumerate() {
         if position == 0 {
             continue;
         }
 
-        let previous_digit = number.to_string().chars().nth(position - 1).unwrap();
+        let previous_digit = number.as_bytes()[position - 1];
         if digit < previous_digit {
             return false;
         }
