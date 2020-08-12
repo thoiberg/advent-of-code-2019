@@ -13,3 +13,10 @@
 - Calling a function directly in a closure
 - Difference between `usize` and `u16`/`u32`
 - passing in functions as arguments
+
+## Lessons from PR
+PR: https://github.com/thoiberg/advent-of-code-2019/pull/1
+
+- I need to refresh my memory on best practices of when to pass by reference and when to pass by value 
+- Storing intermediate values in their own variable can really reduce unnecessary computation
+- I don't understand how strings map to bytes, I need to get a better understanding. If so, then maybe using `bytes` would have been a the more obvious choice when I was first writing the code.
