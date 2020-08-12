@@ -40,9 +40,10 @@ fn number_has_correct_repeating_digits(number: usize) -> bool {
         if position == 0 {
             continue;
         } else if position == 1 {
-            let previous_digit = number.to_string().chars().nth(position - 1).unwrap_or('a');
-            let next_digit = number.to_string().chars().nth(position + 1).unwrap_or('a');
-            let more_next_digit = number.to_string().chars().nth(position + 2).unwrap_or('a');
+            let number_str = number.to_string();
+            let previous_digit = number_str.chars().nth(position - 1).unwrap_or('a');
+            let next_digit = number_str.chars().nth(position + 1).unwrap_or('a');
+            let more_next_digit = number_str.chars().nth(position + 2).unwrap_or('a');
 
             if digit == previous_digit && digit != next_digit && digit != more_next_digit {
                 return true;
@@ -51,10 +52,11 @@ fn number_has_correct_repeating_digits(number: usize) -> bool {
                 return true;
             }
         } else {
-            let previous_digit = number.to_string().chars().nth(position - 1).unwrap_or('a');
-            let more_previous_digit = number.to_string().chars().nth(position - 2).unwrap_or('a');
-            let next_digit = number.to_string().chars().nth(position + 1).unwrap_or('a');
-            let more_next_digit = number.to_string().chars().nth(position + 2).unwrap_or('a');
+            let number_str = number.to_string();
+            let previous_digit = number_str.chars().nth(position - 1).unwrap_or('a');
+            let more_previous_digit = number_str.chars().nth(position - 2).unwrap_or('a');
+            let next_digit = number_str.chars().nth(position + 1).unwrap_or('a');
+            let more_next_digit = number_str.chars().nth(position + 2).unwrap_or('a');
 
             if digit == previous_digit && digit == more_previous_digit {
                 continue;
