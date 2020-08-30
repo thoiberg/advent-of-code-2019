@@ -12,26 +12,6 @@ pub fn read_input_data_from_file(filepath: String) -> Result<Vec<i32>, io::Error
         .collect())
 }
 
-pub fn find_noun_and_verb_that_match_output(
-    intcodes: Vec<i32>,
-    expected_output: i32,
-) -> Option<(i32, i32)> {
-    for noun in 0..100 {
-        for verb in 0..100 {
-            let mut clean_intcodes = intcodes.clone();
-            clean_intcodes[1] = noun;
-            clean_intcodes[2] = verb;
-
-            let instruction_pointer = process_intcodes(clean_intcodes)[0];
-            if instruction_pointer == expected_output {
-                return Some((noun, verb));
-            }
-        }
-    }
-
-    return None;
-}
-
 pub fn process_intcodes(mut intcodes: Vec<i32>) -> Vec<i32> {
     for opcode_position in (0..intcodes.len()).step_by(4) {
         let opcode = intcodes[opcode_position];
