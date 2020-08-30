@@ -1,15 +1,8 @@
-use std::fs::File;
-use std::io;
-use std::io::Read;
+use std::io::Error as ioError;
 
-pub fn read_input_data_from_file(filepath: String) -> Result<Vec<i32>, io::Error> {
-    let mut raw_input_data = File::open(filepath)?;
-    let mut contents = String::new();
-    raw_input_data.read_to_string(&mut contents)?;
-    Ok(contents
-        .split(",")
-        .filter_map(|int| int.parse::<i32>().ok())
-        .collect())
+fn read_and_process_input() -> Result<Vec<String>, ioError> {
+    let contents = include_str!("input_data");
+    Ok(contents.split('\n').map(String::from).collect())
 }
 
 pub fn process_intcodes(mut intcodes: Vec<i32>) -> Vec<i32> {
