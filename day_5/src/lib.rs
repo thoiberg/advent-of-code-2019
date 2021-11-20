@@ -1,6 +1,6 @@
 use std::io::Error as ioError;
 
-fn read_and_process_input() -> Result<Vec<String>, ioError> {
+pub fn read_and_process_input() -> Result<Vec<String>, ioError> {
     let contents = include_str!("input_data");
     Ok(contents.split('\n').map(String::from).collect())
 }
@@ -84,5 +84,13 @@ mod tests {
             process_intcodes(vec![1, 1, 1, 4, 99, 5, 6, 0, 99]),
             vec![30, 1, 1, 4, 2, 5, 6, 0, 99]
         );
+    }
+
+    #[test]
+    fn test_process_intcodes_can_use_values() {
+        assert_eq!(
+            process_intcodes(vec![1002, 4, 3, 4, 33]),
+            vec![1002, 4, 3, 4, 99]
+        )
     }
 }
